@@ -1,19 +1,19 @@
 {
   "name": "JATE",
   "version": "1.0.0",
-  "description": "",
+  "description": "Just Another Text Editor, a Progressive Web Application",
   "main": "server.js",
   "scripts": {
-    "start:dev": "",
-    "start": "",
-    "server": "",
-    "build": "",
+    "start:dev": "concurrently \"cd server && npm run server\" \"cd client && npm run dev\"",
+    "start": "npm run build && cd server && node server.js",
+    "server": "cd server nodemon server.js --ignore client",
+    "build": "cd client && npm run build",
     "install": "cd server && npm i && cd ../client && npm i",
-    "client": ""
+    "client": "cd client && npm start"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Chris Stevenson and Coding Bootcamp",
+  "license": "MIT",
   "dependencies": {
     "express": "^4.17.1",
     "if-env": "^1.0.4"
