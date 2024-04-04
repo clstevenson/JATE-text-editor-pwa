@@ -15,34 +15,34 @@ const initdb = async () =>
 
 // method that accepts some content and adds it to the database
 export const putDb = async (content) => {
-  // open the DB, returning a promise for an enhanced IDBDatabase
+  // Create a connection to the database database and version we want to use.
   const db = await openDB('jate', 1);
-  // create transaction for the DB and save all the content
+
+  // add the content to the DB
   const request = db
     .transaction('jate', 'readwrite')
     .objectStore('jate')
     .add({ value: content });
 
-  // get confirmation of the request
+  // Get confirmation of the request.
   const result = await request;
-  console.log('Saved data', result);
-  return result;
-}
+  console.log('Data saved to the database', result);
+};
 
 // method that gets all the content from the database
 export const getDb = async () => {
-  // open the DB, returning a promise for an enhanced IDBDatabase
+  // create a connection to the DB
   const db = await openDB('jate', 1);
-  // create transaction for the DB and request all the data
-  const request = db
-    .transaction('jate', 'readonly')
+
+  // Get the information from the DB
+  const request = db.transaction('jate', 'readonly')
     .objectStore('jate')
     .getAll();
 
-  // get confirmation of the request
+  // Get confirmation of the request.
   const result = await request;
-  console.log('Retrieved data', result);
+  console.log('result.value', result);
   return result;
-}
+};
 
 initdb();
