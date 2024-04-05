@@ -1,32 +1,34 @@
 import { openDB } from 'idb';
 
-const initdb = async () =>
-  openDB('jate', 1, {
-    upgrade(db) {
-      if (db.objectStoreNames.contains('jate')) {
-        console.log('jate database already exists');
-        return;
-      }
-      // create object store (ie schema) for the app's data
-      db.createObjectStore('jate', { keyPath: 'id', autoIncrement: true });
-      console.log('jate database created');
-    },
-  });
+const initdb = async () => {
+  try {
+    await openDB('jate', 1, {
+      upgrade(db) {
+        if (db.objectStoreNames.contains('jate')) return;
+        // create object store (ie schema) for the app's data
+        db.createObjectStore('jate', { keyPath: 'id', autoIncrement: true });
+      },
+    })
+  } catch (err) {
+    console.log('Error creating dabase', err);
+  }
+};
 
 // method that accepts some content and adds it to the database
 export const putDb = async (content) => {
-  // Create a connection to the database database and version we want to use.
-  const db = await openDB('jate', 1);
-
-  // add the content to the DB
-  const request = db
-    .transaction('jate', 'readwrite')
-    .objectStore('jate')
-    .add({ value: content });
-
-  // Get confirmation of the request.
-  const result = await request;
-  console.log('Data saved to the database', result);
+  try {
+    // Create a connection to the database database and version we want to use.
+    const db = await openDB('jate', 1);
+    // add the content to the DB
+    const request = db
+      .transaction('jate', 'readwrite')
+      .objectStore('jate')
+      .add({ value: content });
+    // Get confirmation of the request.
+    const result = await request;
+  } catch (err) {
+    console.log('Error saving data to DB ', err);
+  }
 };
 
 // method that gets all the content from the database
@@ -39,10 +41,9 @@ export const getDb = async () => {
     .objectStore('jate')
     .getAll();
 
-  // Get confirmation of the request.
+  // await fulfillment of promise then return the value saved
   const result = await request;
-  console.log('result.value', result);
-  return result;
+  return result.value;
 };
 
 initdb();
